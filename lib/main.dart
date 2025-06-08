@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:kuraztest/todoapp/todoapp.dart';
 
-void main() {
-  runApp(const ToDoApp());
+import 'package:kuraztest/task/task.dart';
+
+import 'package:kuraztest/notifi_service/noti_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotiService().initNotifiaction;
+  //   await NotiService().initNotifiaction();
+  // tz.initializeTimeZones();
+  runApp(TaskList());
 }

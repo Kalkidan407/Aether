@@ -8,11 +8,14 @@ plugins {
 android {
     namespace = "com.example.kuraztest"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+     ndkVersion = "29.0.13113456"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+      
+        isCoreLibraryDesugaringEnabled = true
+        
     }
 
     kotlinOptions {
@@ -25,6 +28,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
+        multiDexEnabled = true
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -41,4 +45,13 @@ android {
 
 flutter {
     source = "../.."
+}
+
+
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4") // ✅ Use parentheses and double quotes
+
+  
 }

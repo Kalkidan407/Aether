@@ -1,6 +1,6 @@
 name: kuraztest
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -11,10 +11,16 @@ dependencies:
     sdk: flutter
   material: ^1.0.0+2
 
+  flutter_local_notifications: ^19.2.1
+
+  timezone: ^0.10.1
+  permission_handler: ^12.0.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  very_good_analysis: ^7.0.0
 
 flutter:
   uses-material-design: true
