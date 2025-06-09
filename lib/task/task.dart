@@ -122,6 +122,34 @@ class _TaskListState extends State<TaskList> {
                   final task = tasks[index];
                   return Dismissible(
                     key: UniqueKey(),
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (direction) async {
+                      return await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirm'),
+                            iconColor: Colors.amberAccent,
+                            content: Text(
+                              'Are you sure you want to delete : ${task.title} ?',
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed:
+                                    () => Navigator.of(context).pop(false),
+
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed:
+                                    () => Navigator.of(context).pop(true),
+                                child: Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     onDismissed: (direction) {
                       setState(() {
                         tasks.removeAt(index);
@@ -133,6 +161,7 @@ class _TaskListState extends State<TaskList> {
                         ),
                       );
                     },
+                    // confirmDismiss:,
                     background: Container(
                       color: Colors.red,
                       child: Icon(Icons.delete),
@@ -193,32 +222,25 @@ class _TaskListState extends State<TaskList> {
                                           pickedEnd.hour,
                                           pickedEnd.minute,
                                         );
+
+                                        final scheduledTimeAtStart = DateTime(
+                                          now.year,
+                                          now.month,
+                                          now.day,
+                                          pickedStart.hour,
+                                          pickedStart.minute,
+                                        );
                                         final duration = scheduledTime
                                             .difference(now);
 
                                         if (duration.inSeconds > 0) {
-                                          // final half = now.add(
-                                          //   Duration(
-                                          //     seconds:
-                                          //         (duration.inSeconds * 0.5)
-                                          //             .round(),
-                                          //   ),
-                                          // );
-
-                                          // final threeQuarter = now.add(
-                                          //   Duration(
-                                          //     seconds:
-                                          //         (duration.inSeconds * 0.75)
-                                          //             .round(),
-                                          //   ),
-                                          // );
                                           final half = now.add(duration * 0.5);
                                           final threeQuarter = now.add(
                                             duration * 0.75,
                                           );
 
                                           await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 1,
+                                            id: task.title.hashCode + 2,
                                             title: "Reminder",
                                             body:
                                                 "Halfway to deadline: ${task.title}",
@@ -226,7 +248,7 @@ class _TaskListState extends State<TaskList> {
                                           );
 
                                           await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 2,
+                                            id: task.title.hashCode + 3,
                                             title: "Almost due!",
                                             body:
                                                 "75% time passed for task: ${task.title}",
@@ -234,11 +256,11 @@ class _TaskListState extends State<TaskList> {
                                           );
 
                                           await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 3,
+                                            id: task.title.hashCode + 1,
                                             title: "new task add",
                                             body:
                                                 "${task.title} add to your today to to list",
-                                            scheduledTime: scheduledTime,
+                                            scheduledTime: scheduledTimeAtStart,
                                           );
                                         }
                                       }

@@ -27,14 +27,8 @@ class NotiService {
       '@mipmap/ic_launcher',
     );
     const initSettings = InitializationSettings(android: initSettingsAndriod);
-
     await notificationPlugin.initialize(initSettings);
-
-    // Initialize timezones
     tz.initializeTimeZones();
-
-    // ✅ Request notification permission (Android 13+)
-
     _isInitialized = true; // ✅ Important: mark initialized
   }
 
@@ -57,6 +51,8 @@ class NotiService {
     required DateTime scheduledTime,
   }) async {
     final scheduledTZ = tz.TZDateTime.from(scheduledTime, tz.local);
+    print("Scheduled at: $scheduledTZ | Now: ${DateTime.now()}");
+
     await notificationPlugin.zonedSchedule(
       id,
       title,
