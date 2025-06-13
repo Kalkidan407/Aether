@@ -24,7 +24,7 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
   bool _isDarkMode = false;
   final List<Task> tasks = [];
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller = TextEditingController();
   ThemeMode themeMode = ThemeMode.system;
 
   @override
@@ -39,6 +39,11 @@ class _TaskListState extends State<TaskList> {
     if (!status.isGranted) {
       await Permission.notification.request();
     }
+  }
+
+  String capitalize(String text) {
+    if (text.isEmpty) return '';
+    return text[0].toUpperCase() + text.substring(1);
   }
 
   void addTask(String title) {
@@ -58,6 +63,12 @@ class _TaskListState extends State<TaskList> {
     setState(() {
       tasks.removeAt(index);
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -166,9 +177,10 @@ class _TaskListState extends State<TaskList> {
                       color: Colors.red,
                       child: Icon(Icons.delete),
                     ),
+
                     child: ListTile(
                       title: Text(
-                        task.title,
+                        capitalize(task.title),
                         style: TextStyle(
                           fontSize: 15.0,
                           decoration:
@@ -181,7 +193,6 @@ class _TaskListState extends State<TaskList> {
                         value: task.isDone,
                         onChanged: (_) => toggleTask(index),
                         activeColor: Colors.green,
-                        shape: CircleBorder(),
                       ),
                       trailing:
                           task.startTime != null && task.endTime != null
@@ -257,7 +268,8 @@ class _TaskListState extends State<TaskList> {
 
                                           await NotiService().scheduleNotification(
                                             id: task.title.hashCode + 1,
-                                            title: "new task add",
+                                            title:
+                                                "Your task started, go and complete :)",
                                             body:
                                                 "${task.title} add to your today to to list",
                                             scheduledTime: scheduledTimeAtStart,
