@@ -5,7 +5,9 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'package:kuraztest/notifi_service/noti_service.dart';
-import 'package:kuraztest/todoapp/todoapp.dart';
+import 'package:kuraztest/heat_map/heat_map.dart';
+import 'draggable_sheet.dart';
+import 'draggable_sheet.dart';
 
 class Task {
   String title;
@@ -79,6 +81,7 @@ class _TaskListState extends State<TaskList> {
           _isDarkMode
               ? ThemeData.dark(useMaterial3: true)
               : ThemeData.light(useMaterial3: true),
+
       home: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -96,9 +99,21 @@ class _TaskListState extends State<TaskList> {
             ),
           ],
         ),
-        floatingActionButton: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.settings),
+
+        // floatingActionButton: IconButton(
+        //   onPressed: () {
+        //     MyWidget();
+        //   },
+        //   icon: Icon(Icons.analytics_outlined, size: 40),
+        // ),
+        floatingActionButton: SizedBox(
+          height: 60,
+          width: 60,
+          child: FloatingActionButton(
+            backgroundColor: Color.fromARGB(255, 53, 7, 127),
+            onPressed: () => showDraggableSheet(context), // ✅ call from import
+            child: Icon(Icons.grid_view, size: 30, color: Colors.white),
+          ),
         ),
         body: Column(
           children: [
@@ -140,7 +155,7 @@ class _TaskListState extends State<TaskList> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Confirm'),
-                            iconColor: Colors.amberAccent,
+                            iconColor: const Color.fromARGB(255, 241, 226, 172),
                             content: Text(
                               'Are you sure you want to delete : ${task.title} ?',
                             ),

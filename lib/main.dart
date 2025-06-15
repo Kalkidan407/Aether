@@ -10,5 +10,11 @@ void main() async {
   await NotiService().initNotifiaction;
   //   await NotiService().initNotifiaction();
   // tz.initializeTimeZones();
-  runApp(TaskList());
+
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: TaskList(), // or whatever your main widget is
+    ),
+  );
 }
