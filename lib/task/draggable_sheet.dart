@@ -5,17 +5,22 @@ void showDraggableSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: const Color.fromARGB(255, 239, 239, 239),
     builder:
-        (context) => DraggableScrollableSheet(
-          initialChildSize: 0.4,
-          minChildSize: 0.2,
-          maxChildSize: 0.9,
-
-          expand: false,
-          builder: (context, scrollController) {
-            return HeatMapPage(scrollController: scrollController);
-          },
+        (context) => Builder(
+          builder:
+              (newContext) => DraggableScrollableSheet(
+                initialChildSize: 0.4,
+                minChildSize: 0.2,
+                maxChildSize: 0.9,
+                expand: false,
+                builder: (context, scrollController) {
+                  return Container(
+                    width: double.infinity,
+                    child: HeatMapPage(scrollController: scrollController),
+                  );
+                },
+              ),
         ),
   );
 }

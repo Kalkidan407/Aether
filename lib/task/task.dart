@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:kuraztest/heat_map/heatmap_data_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
 import 'package:kuraztest/notifi_service/noti_service.dart';
+
 import 'package:kuraztest/heat_map/heat_map.dart';
+import 'package:kuraztest/heat_map/heatmap_data_provider.dart';
 import 'draggable_sheet.dart';
-import 'draggable_sheet.dart';
+import 'package:provider/provider.dart';
 
 class Task {
   String title;
@@ -24,7 +24,7 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  bool _isDarkMode = false;
+  bool _isDarkMode = true;
   final List<Task> tasks = [];
   late final TextEditingController _controller = TextEditingController();
   ThemeMode themeMode = ThemeMode.system;
@@ -52,6 +52,7 @@ class _TaskListState extends State<TaskList> {
     setState(() {
       tasks.add(Task(title));
       _controller.clear();
+      _controller.clearComposing();
     });
   }
 
@@ -85,36 +86,34 @@ class _TaskListState extends State<TaskList> {
       home: Scaffold(
         appBar: AppBar(
           title: Text(
-            'To-Do-List',
+            'Aether',
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
           actions: [
             IconButton(
-              icon: Icon(_isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+              icon: Icon(
+                _isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
+              ),
               onPressed: () {
                 setState(() {
                   _isDarkMode = !_isDarkMode;
                 });
               },
             ),
+            IconButton(icon: Icon(Icons.settings), onPressed: () {}),
           ],
         ),
 
-        // floatingActionButton: IconButton(
-        //   onPressed: () {
-        //     MyWidget();
-        //   },
-        //   icon: Icon(Icons.analytics_outlined, size: 40),
-        // ),
         floatingActionButton: SizedBox(
           height: 60,
           width: 60,
           child: FloatingActionButton(
             backgroundColor: Color.fromARGB(255, 53, 7, 127),
-            onPressed: () => showDraggableSheet(context), // ✅ call from import
+            onPressed: () => showDraggableSheet(context),
             child: Icon(Icons.grid_view, size: 30, color: Colors.white),
           ),
         ),
+
         body: Column(
           children: [
             Padding(
@@ -180,6 +179,7 @@ class _TaskListState extends State<TaskList> {
                       setState(() {
                         tasks.removeAt(index);
                       });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(' You delete, [ ${task.title} ] '),
@@ -206,7 +206,20 @@ class _TaskListState extends State<TaskList> {
                       ),
                       leading: Checkbox(
                         value: task.isDone,
-                        onChanged: (_) => toggleTask(index),
+                        onChanged: (value) {
+                          setState(() {
+                            task.isDone = value!;
+                          });
+                          final heatmapDataProvider =
+                              Provider.of<HeatmapDataProvider>(
+                                context,
+                                listen: false,
+                              );
+                          if (value!) {
+                            heatmapDataProvider.markTaskDone(DateTime.now());
+                          }
+                        },
+
                         activeColor: Colors.green,
                       ),
                       trailing:
