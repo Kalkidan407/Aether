@@ -3,20 +3,12 @@ import 'package:kuraztest/heat_map/heatmap_data_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:kuraztest/notifi_service/noti_service.dart';
-
-import 'package:kuraztest/heat_map/heat_map.dart';
-import 'package:kuraztest/heat_map/heatmap_data_provider.dart';
 import 'draggable_sheet.dart';
 import 'package:provider/provider.dart';
+import '../models/task.dart';
 
-class Task {
-  String title;
-  bool isDone;
-  TimeOfDay? startTime;
-  TimeOfDay? endTime;
-
-  Task(this.title, {this.isDone = false, this.startTime, this.endTime});
-}
+TimeOfDay? startTime;
+TimeOfDay? endTime;
 
 class TaskList extends StatefulWidget {
   @override
@@ -223,92 +215,92 @@ class _TaskListState extends State<TaskList> {
                         activeColor: Colors.green,
                       ),
                       trailing:
-                          task.startTime != null && task.endTime != null
-                              ? Text(
-                                '${task.startTime!.format(context)} - ${task.endTime!.format(context)}',
-                              )
-                              : IconButton(
-                                onPressed: () async {
-                                  final pickedStart = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay.now(),
-                                    helpText: 'Pick Start Time',
-                                    initialEntryMode: TimePickerEntryMode.input,
-                                  );
+                      // task.startTime != null && task.endTime != null
+                      //     ? Text(
+                      //       '${task.startTime!.hour} - ${task.endTime!.hour}',
+                      //     )
+                      IconButton(
+                        onPressed: () async {
+                          //  startTime = await showTimePicker(
+                          //   context: context,
+                          //   initialTime: TimeOfDay.now(),
+                          //   helpText: 'Pick Start Time',
+                          //   initialEntryMode: TimePickerEntryMode.input,
+                          // );
 
-                                  if (pickedStart != null) {
-                                    final pickedEnd = await showTimePicker(
-                                      context: context,
-                                      initialTime: pickedStart,
-                                      helpText: 'Pick End Time',
-                                      initialEntryMode:
-                                          TimePickerEntryMode.input,
-                                    );
+                          // if (startTime != null) {
+                          //    endTime = await showTimePicker(
+                          //     context: context,
+                          //     initialTime: startTime,
+                          //     helpText: 'Pick End Time',
+                          //     initialEntryMode:
+                          //         TimePickerEntryMode.input,
+                          //   );
 
-                                    if (pickedEnd != null) {
-                                      setState(() {
-                                        task.startTime = pickedStart;
-                                        task.endTime = pickedEnd;
-                                      });
+                          //   if (endTime != null) {
+                          //     setState(() {
+                          //       task.startTime = startTime;
+                          //       task.endTime = endTime;
+                          //     });
 
-                                      if (!task.isDone) {
-                                        final now = DateTime.now();
+                          //     if (!task.isDone) {
+                          //       final now = DateTime.now();
 
-                                        final scheduledTime = DateTime(
-                                          now.year,
-                                          now.month,
-                                          now.day,
-                                          pickedEnd.hour,
-                                          pickedEnd.minute,
-                                        );
+                          //       final scheduledTime = DateTime(
+                          //         now.year,
+                          //         now.month,
+                          //         now.day,
+                          //         pickedEnd.hour,
+                          //         pickedEnd.minute,
+                          //       );
 
-                                        final scheduledTimeAtStart = DateTime(
-                                          now.year,
-                                          now.month,
-                                          now.day,
-                                          pickedStart.hour,
-                                          pickedStart.minute,
-                                        );
-                                        final duration = scheduledTime
-                                            .difference(now);
+                          //       final scheduledTimeAtStart = DateTime(
+                          //         now.year,
+                          //         now.month,
+                          //         now.day,
+                          //         pickedStart.hour,
+                          //         pickedStart.minute,
+                          //       );
+                          //       final duration = scheduledTime
+                          //           .difference(now);
 
-                                        if (duration.inSeconds > 0) {
-                                          final half = now.add(duration * 0.5);
-                                          final threeQuarter = now.add(
-                                            duration * 0.75,
-                                          );
+                          //       if (duration.inSeconds > 0) {
+                          //         final half = now.add(duration * 0.5);
+                          //         final threeQuarter = now.add(
+                          //           duration * 0.75,
+                          //         );
 
-                                          await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 2,
-                                            title: "Reminder",
-                                            body:
-                                                "Halfway to deadline: ${task.title}",
-                                            scheduledTime: half,
-                                          );
+                          //         await NotiService().scheduleNotification(
+                          //           id: task.title.hashCode + 2,
+                          //           title: "Reminder",
+                          //           body:
+                          //               "Halfway to deadline: ${task.title}",
+                          //           scheduledTime: half,
+                          //         );
 
-                                          await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 3,
-                                            title: "Almost due!",
-                                            body:
-                                                "75% time passed for task: ${task.title}",
-                                            scheduledTime: threeQuarter,
-                                          );
+                          //         await NotiService().scheduleNotification(
+                          //           id: task.title.hashCode + 3,
+                          //           title: "Almost due!",
+                          //           body:
+                          //               "75% time passed for task: ${task.title}",
+                          //           scheduledTime: threeQuarter,
+                          //         );
 
-                                          await NotiService().scheduleNotification(
-                                            id: task.title.hashCode + 1,
-                                            title:
-                                                "Your task started, go and complete :)",
-                                            body:
-                                                "${task.title} add to your today to to list",
-                                            scheduledTime: scheduledTimeAtStart,
-                                          );
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                icon: Icon(Icons.timer),
-                              ),
+                          //         await NotiService().scheduleNotification(
+                          //           id: task.title.hashCode + 1,
+                          //           title:
+                          //               "Your task started, go and complete :)",
+                          //           body:
+                          //               "${task.title} add to your today to to list",
+                          //           scheduledTime: scheduledTimeAtStart,
+                          //         );
+                          //       }
+                          //     }
+                          //   }
+                          // }
+                        },
+                        icon: Icon(Icons.timer),
+                      ),
                     ),
                   );
                 },

@@ -10,7 +10,9 @@ class HeatMapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heatmapData = Provider.of<HeatmapDataProvider>(context);
+    // final heatmapData = Provider.of<HeatmapDataProvider>(context);
+    final heapMapData = context.watch<HeatmapDataProvider>().data;
+    print('dataset value: $heapMapData');
 
     return SingleChildScrollView(
       controller: scrollController,
@@ -24,30 +26,30 @@ class HeatMapPage extends StatelessWidget {
           ),
           const SizedBox(height: 26),
           HeatMapCalendar(
-            datasets: heatmapData.dataset,
-            size: 25, // Small square like GitHub
-            fontSize: 10.0,
+            datasets: heapMapData,
+            size: 35,
 
-            textColor: const Color.fromARGB(0, 233, 225, 225),
-            margin: EdgeInsets.all(2),
-            borderRadius: 5,
+            borderRadius: 6,
             colorsets: {
-              1: const Color.fromARGB(255, 129, 180, 131),
-              2: const Color.fromARGB(255, 93, 172, 95),
-              3: const Color.fromARGB(255, 77, 181, 81),
-              4: const Color.fromARGB(255, 60, 181, 64),
-              5: const Color.fromARGB(255, 15, 171, 20),
+              1: const Color.fromARGB(255, 168, 211, 170),
+              2: const Color.fromARGB(255, 129, 193, 131),
+              3: const Color.fromARGB(255, 97, 174, 101),
+              4: const Color.fromARGB(255, 80, 180, 85),
+              5: const Color.fromARGB(255, 14, 164, 19),
             },
-            colorTipCount: 5,
-            colorTipHelper: [Text("Low"), Text("Medium"), Text("High")],
-            colorMode: ColorMode.opacity,
+            colorTipHelper: [Text("Low "), Text("   High")],
+            colorMode: ColorMode.color,
             showColorTip: true,
-
+            onClick: (date) {
+              // ScaffoldMessenger.of(
+              //   context,
+              // ).showSnackBar(SnackBar(content: Text('Clicked on $date')));
+            },
             initDate: DateTime.now(),
             monthFontSize: 10,
             weekFontSize: 10,
             weekTextColor: Colors.grey[500],
-            defaultColor: const Color.fromARGB(255, 233, 229, 214),
+            defaultColor: const Color.fromARGB(93, 205, 205, 102),
           ),
 
           // const SizedBox(height: 400),

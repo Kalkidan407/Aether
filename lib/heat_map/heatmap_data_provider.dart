@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HeatmapDataProvider with ChangeNotifier {
   Map<DateTime, int> _data = {};
 
-  Map<DateTime, int> get dataset => _data;
+  Map<DateTime, int> get data => _data;
 
   // void incrementForToday() {
   //   final today = _normalize(DateTime.now());
