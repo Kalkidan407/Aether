@@ -6,12 +6,12 @@ part 'task.g.dart';
 class Task {
   Id id = Isar.autoIncrement;
 
-  late String title;                 // required task name
-  late DateTime deadline;           // required deadline (can default to now)
-  bool isDone = false;              // is completed now?
-  bool wasEverCompleted = false;    // useful for streaks/history
-  DateTime? startTime;              // optional start
-  DateTime? endTime;                // optional end
+  late String title;                
+  late DateTime deadline;           
+  bool isDone = false;             
+  bool wasEverCompleted = false;    
+  DateTime? startTime;              
+  DateTime? endTime;              
 
   Task();
 

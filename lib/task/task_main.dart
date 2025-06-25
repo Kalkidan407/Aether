@@ -6,10 +6,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 //import 'package:kuraztest/notifi_service/noti_service.dart';
 import 'draggable_sheet.dart';
-import 'package:provider/provider.dart';
+
 import '../models/task.dart';
 
 import '../services/isar_services.dart';
+import 'package:intl/intl.dart';
+import 'package:chrono_dart/chrono_dart.dart' show Chrono;
 
 // TimeOfDay? startTime;
 // TimeOfDay? endTime;
@@ -58,21 +60,32 @@ class _TaskListState extends State<TaskList> {
 
  Future<void> _addTask(String title) async {
     final isar  = await _dbFuture;
+    DateTime? deadline = Chrono.parseDate(title);
+   // DateTime deadline = DateTime.now();
+
+if(deadline == null) {
+  deadline = await showDatePicker(
+    context: context,
+     firstDate: DateTime.now().subtract(const Duration(days: 1)), 
+     lastDate: DateTime.now().add(const Duration(days: 365)),
+     
+     );
+  // final parsed = result.first;
+  if( deadline == null) return;
+}
+
     final task = Task()
       ..title = title
-      ..deadline = DateTime.now();
+      ..deadline = deadline;
       await isar.writeTxn(() => isar.tasks.put(task));
-  }
+      
+  } 
 
-
-  Future<void> _toggleTask(Isar isar, Task task) async{
+  Future<void> _toggleTask(Isar isar, Task task) async {
      task.isDone = !task.isDone;
      await isar.writeTxn(() => isar.tasks.put(task));
      
   }
-
-
-
 
   Future<void> _deleteTask(Isar isar, Task task) async {
     await isar.writeTxn(() => isar.tasks.delete(task.id));
@@ -145,9 +158,11 @@ class _TaskListState extends State<TaskList> {
                     child: TextField(
                       controller: _controller,
                       decoration: const InputDecoration(
-                        labelText: 'Add a task',
+                        
+                        labelText: 'e.g. Finish report this Friday',
                         border: OutlineInputBorder(),
                       ),
+                      // onSubmitted: (_) => _addTask(title),
                     ),
                   ),
                   IconButton(
@@ -247,15 +262,16 @@ class _TaskListState extends State<TaskList> {
 
 
                       
-                      trailing:
-                      // task.startTime != null && task.endTime != null
-                      //     ? Text(
-                      //       '${task.startTime!.hour} - ${task.endTime!.hour}',
-                      //     )
-                      IconButton(
-                        onPressed: () {
-                        _deleteTask(isar, task);
-                        }, icon: Icon(Icons.timer)),
+                trailing: task.deadline != null
+    ? Text(
+        '🕒 ${DateFormat('EEE, MMM d').format(task.deadline)}',
+        style: const TextStyle(fontSize: 13),
+      )
+    : IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.timer),
+      ),
+
                     ),
                   );
                 },
