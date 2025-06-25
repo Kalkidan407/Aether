@@ -18,12 +18,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HeatmapDataProvider(),
+    return
+    MultiProvider(
+      providers: [
+     ChangeNotifierProvider(
+      create: (_) => HeatmapDataProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: TaskList(),
       ),
-    );
+     ) ;
+     
   }
 }

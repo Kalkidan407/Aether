@@ -23,7 +23,7 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   bool _isDarkMode = true;
-   late Future<Isar> _dbFuture;
+  late Future<Isar> _dbFuture;
   final IsarService isarService = IsarService();
 
   late final TextEditingController _controller = TextEditingController();
@@ -36,6 +36,7 @@ class _TaskListState extends State<TaskList> {
     tz.initializeTimeZones();
     _dbFuture = _initDb();
   }
+
   Future<Isar> _initDb() async{
     final dir = await getApplicationDocumentsDirectory();
     return await Isar.open([TaskSchema], directory: dir.path);
@@ -67,7 +68,11 @@ class _TaskListState extends State<TaskList> {
   Future<void> _toggleTask(Isar isar, Task task) async{
      task.isDone = !task.isDone;
      await isar.writeTxn(() => isar.tasks.put(task));
+     
   }
+
+
+
 
   Future<void> _deleteTask(Isar isar, Task task) async {
     await isar.writeTxn(() => isar.tasks.delete(task.id));
@@ -225,21 +230,23 @@ class _TaskListState extends State<TaskList> {
                       ),
                       leading: Checkbox(
                         value: task.isDone,
-                        onChanged: (_) { 
-                          _toggleTask(isar, task);
+                        onChanged: (value)  async{
+
                         
-                          final heatmapDataProvider =
+                        await   _toggleTask( isar, task);
+                          
+                        final heatmapDataProvider =
                               Provider.of<HeatmapDataProvider>(
                                 context,
                                 listen: false,
                               );
-                          
-                            heatmapDataProvider.markTaskDone(DateTime.now());
-                          
-                        },
-
+                         heatmapDataProvider.markTaskDone(DateTime.now());
+                          },
                         activeColor: Colors.green,
                       ),
+
+
+                      
                       trailing:
                       // task.startTime != null && task.endTime != null
                       //     ? Text(

@@ -11,7 +11,11 @@ class IsarService {
 
   Future<Isar> _initDb() async {
     final dir = await getApplicationDocumentsDirectory();
-    return await Isar.open([TaskSchema], directory: dir.path);
+    return await Isar.open(
+      [TaskSchema], 
+      directory: dir.path, 
+      inspector: true,
+      );
   }
 
   Future<void> addTask(Task newTask) async {

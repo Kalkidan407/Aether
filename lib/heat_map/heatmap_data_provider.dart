@@ -1,32 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import '../models/heat_entry.dart';
 
 class HeatmapDataProvider with ChangeNotifier {
+  late Future<Isar> _dbFuture;
   Map<DateTime, int> _data = {};
 
   Map<DateTime, int> get data => _data;
 
-  // void incrementForToday() {
-  //   final today = _normalize(DateTime.now());
-  //   _dataset[today] = (_dataset[today] ?? 0) + 1;
-  //   notifyListeners();
-  // }
-  void markTaskDone(DateTime date) {
-    final day = DateTime(date.year, date.month, date.day);
-    _data[day] = (_data[day] ?? 0) + 1;
-    print('🟢 Task added: $_data'); // Add this line
+  HeatmapDataProvider() {
+    _dbFuture = _initDb();
+    _loadFromDb();
+  }
+
+  Future<Isar> _initDb() async {
+    final dir = await getApplicationDocumentsDirectory();
+    return await Isar.open([HeatEntrySchema], directory: dir.path);
+  }
+
+  Future<void> _loadFromDb() async {
+    final isar = await _dbFuture;
+    final entries = await isar.heatEntrys.where().findAll();
+
+    _data = {
+      for (var e in entries)
+        DateTime(e.date.year, e.date.month, e.date.day): e.count,
+    };
+
     notifyListeners();
   }
 
-  // void decrementForToday() {
-  //   final today = _normalize(DateTime.now());
-  //   if (_dataset.containsKey(today)) {
-  //     _dataset[today] = _dataset[today]! - 1;
-  //     if (_dataset[today]! <= 0) {
-  //       _dataset.remove(today);
-  //     }
-  //     notifyListeners();
-  //   }
-  // }
+  Future<void> markTaskDone(DateTime date) async {
+    final isar = await _dbFuture;
+    final normalized = DateTime(date.year, date.month, date.day);
 
-  DateTime _normalize(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
+    final existing = await isar.heatEntrys.filter().dateEqualTo(normalized).findFirst();
+
+    await isar.writeTxn(() async {
+      if (existing != null) {
+        existing.count += 1;
+        await isar.heatEntrys.put(existing);
+      } else {
+        await isar.heatEntrys.put(
+          HeatEntry()
+            ..date = normalized
+            ..count = 1,
+        );
+      }
+    });
+
+    _data[normalized] = (_data[normalized] ?? 0) + 1;
+    notifyListeners();
+  }
 }
