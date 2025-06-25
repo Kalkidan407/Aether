@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:kuraztest/heat_map/heatmap_data_provider.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 //import 'package:kuraztest/notifi_service/noti_service.dart';
@@ -235,12 +235,12 @@ class _TaskListState extends State<TaskList> {
                         
                         await   _toggleTask( isar, task);
                           
-                        final heatmapDataProvider =
-                              Provider.of<HeatmapDataProvider>(
-                                context,
-                                listen: false,
-                              );
-                         heatmapDataProvider.markTaskDone(DateTime.now());
+                        // final heatmapDataProvider =
+                        //       Provider.of<HeatmapDataProvider>(
+                        //         context,
+                        //         listen: false,
+                        //       );
+                        //  heatmapDataProvider;
                           },
                         activeColor: Colors.green,
                       ),
