@@ -29,9 +29,14 @@ class IsarService {
     await isar.writeTxn(() => isar.tasks.delete(id));
   }
 
-  Future<void> toggleComplete(Task task) async {
+  Future<void> toggleTask(Task task) async {
     final isar = await db;
-    task.isCompleted = !task.isCompleted;
+    task.isDone = !task.isDone;
     await isar.writeTxn(() => isar.tasks.put(task));
   }
+ Stream<List<Task>> watchTasks() async* {
+    final isar = await db;
+    yield* isar.tasks.where().watch(fireImmediately: true);
+  }
+
 }

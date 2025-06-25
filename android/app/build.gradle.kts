@@ -7,16 +7,19 @@ plugins {
 
 android {
     namespace = "com.example.kuraztest"
+    
     compileSdk = flutter.compileSdkVersion
-     ndkVersion = "29.0.13113456"
+    ndkVersion = "29.0.13113456"
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-      
-        isCoreLibraryDesugaringEnabled = true
-        
-    }
+
+compileOptions {
+    isCoreLibraryDesugaringEnabled = true
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+
+    
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
@@ -27,13 +30,23 @@ android {
         applicationId = "com.example.kuraztest"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
+       
         minSdk = flutter.minSdkVersion
         multiDexEnabled = true
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-    }
+  
 
+
+    }
+   dependencies {
+   
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+
+}
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -45,13 +58,4 @@ android {
 
 flutter {
     source = "../.."
-}
-
-
-
-dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4") // ✅ Use parentheses and double quotes
-
-  
 }

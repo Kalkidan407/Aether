@@ -92,14 +92,13 @@ Task _taskDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Task(
-    reader.readString(offsets[4]),
-    endTime: reader.readDateTimeOrNull(offsets[1]),
-    isDone: reader.readBoolOrNull(offsets[2]) ?? false,
-    startTime: reader.readDateTimeOrNull(offsets[3]),
-  );
+  final object = Task();
   object.deadline = reader.readDateTime(offsets[0]);
+  object.endTime = reader.readDateTimeOrNull(offsets[1]);
   object.id = id;
+  object.isDone = reader.readBool(offsets[2]);
+  object.startTime = reader.readDateTimeOrNull(offsets[3]);
+  object.title = reader.readString(offsets[4]);
   object.wasEverCompleted = reader.readBool(offsets[5]);
   return object;
 }
@@ -116,7 +115,7 @@ P _taskDeserializeProp<P>(
     case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readBool(offset)) as P;
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
