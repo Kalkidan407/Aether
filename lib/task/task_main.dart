@@ -12,6 +12,7 @@ import '../models/task.dart';
 import '../services/isar_services.dart';
 import 'package:intl/intl.dart';
 import 'package:chrono_dart/chrono_dart.dart' show Chrono;
+import 'package:kuraztest/gemini_service.dart';
 
 // TimeOfDay? startTime;
 // TimeOfDay? endTime;
@@ -39,11 +40,18 @@ class _TaskListState extends State<TaskList> {
     _dbFuture = _initDb();
   }
 
+  final geminiService = GeminiService();
+  void _handleTaskInput(String userInput) async{
+     final extracted = await geminiService.extractDeadline(userInput);
+     print('Gemini says: $extracted');
+  }
+
   Future<Isar> _initDb() async{
     final dir = await getApplicationDocumentsDirectory();
     return await Isar.open([TaskSchema], directory: dir.path);
   }
-
+ 
+   
 
 
   void _requestPermissions() async {
@@ -70,6 +78,7 @@ if(deadline == null) {
      lastDate: DateTime.now().add(const Duration(days: 365)),
      
      );
+
   // final parsed = result.first;
   if( deadline == null) return;
 }
@@ -89,6 +98,24 @@ if(deadline == null) {
 
   Future<void> _deleteTask(Isar isar, Task task) async {
     await isar.writeTxn(() => isar.tasks.delete(task.id));
+  }
+
+  Future<void> _isOverDue(Isar isar, Task task) async {
+  //  final delete = await isar.writeTxn(() => isar.tasks.delete(task.id));
+DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+    final isar = Isar.getInstance(); // or use your isar service
+    final completedTasks = await isar!.tasks
+        .filter()
+        .isDoneEqualTo(true)
+        .findAll();
+  final date = _normalizeDate(task.startTime ?? task.deadline ?? DateTime.now()); 
+     if (date.isBefore(DateTime.now()) || date.isAtSameMomentAs(DateTime.now())) {
+      isar.tasks;
+}
+
+
   }
 
   @override
@@ -168,6 +195,7 @@ if(deadline == null) {
                   IconButton(
                     onPressed: () {
                       final title = _controller.text.trim();
+                      _handleTaskInput(title);
                       if (title.isNotEmpty) {
 
                         _addTask(title);
@@ -245,6 +273,7 @@ if(deadline == null) {
                       ),
                       leading: Checkbox(
                         value: task.isDone,
+                        
                         onChanged: (value)  async{
 
                         
@@ -262,15 +291,31 @@ if(deadline == null) {
 
 
                       
-                trailing: task.deadline != null
-    ? Text(
+                trailing: 
+                
+                GestureDetector(
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context, 
+                    firstDate: DateTime.now().subtract(Duration(days: 365)), 
+                    lastDate: DateTime.now().add(Duration(days: 365*5)),
+                    );
+                    if(picked != null && picked != task.deadline){
+                      final Isar = await _dbFuture;
+                      task.deadline = picked;
+                      await isar.writeTxn(() => isar.tasks.put(task));
+                      setState(() {
+                        
+                      });
+
+                    }
+                  },
+                  child: Text(
         '🕒 ${DateFormat('EEE, MMM d').format(task.deadline)}',
         style: const TextStyle(fontSize: 13),
-      )
-    : IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.timer),
       ),
+                )
+           
 
                     ),
                   );

@@ -66,11 +66,16 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:isar/isar.dart';
 import 'package:kuraztest/models/task.dart';
 
-class HeatMapPage extends StatelessWidget {
+class HeatMapPage extends StatefulWidget {
   final ScrollController scrollController;
 
   HeatMapPage({Key? key, required this.scrollController}) : super(key: key);
 
+  @override
+  State<HeatMapPage> createState() => _HeatMapPageState();
+}
+
+class _HeatMapPageState extends State<HeatMapPage> {
   // Normalize the DateTime to remove time info (just keep date)
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
@@ -87,9 +92,14 @@ class HeatMapPage extends StatelessWidget {
     final Map<DateTime, int> heatmapData = {};
 
     for (final task in completedTasks) {
-      if (task.startTime != null) {
-        final date = _normalizeDate(task.startTime!);
-        heatmapData[date] = (heatmapData[date] ?? 0) + 1;
+      if (task.deadline != null ) {
+        final date = _normalizeDate(task.startTime ?? task.deadline ??  DateTime.now());
+
+if (date.isBefore(DateTime.now()) || date.isAtSameMomentAs(DateTime.now())) {
+  heatmapData[date] = (heatmapData[date] ?? 0) + 1;
+}
+
+        
       }
     }
 
@@ -109,7 +119,7 @@ class HeatMapPage extends StatelessWidget {
         print('🔥 Heatmap data: $heatmapData');
 
         return SingleChildScrollView(
-          controller: scrollController,
+          controller: widget.scrollController,
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
@@ -124,11 +134,11 @@ class HeatMapPage extends StatelessWidget {
                 size: 35,
                 borderRadius: 6,
                 colorsets: {
-                  1: const Color.fromARGB(255, 168, 211, 170),
-                  2: const Color.fromARGB(255, 129, 193, 131),
-                  3: const Color.fromARGB(255, 97, 174, 101),
-                  4: const Color.fromARGB(255, 80, 180, 85),
-                  5: const Color.fromARGB(255, 14, 164, 19),
+                  1: const Color.fromARGB(255, 150, 202, 152),
+                  2: const Color.fromARGB(255, 119, 190, 121),
+                  3: const Color.fromARGB(255, 86, 170, 90),
+                  4: const Color.fromARGB(255, 66, 175, 72),
+                  5: const Color.fromARGB(255, 12, 162, 17),
                 },
                 colorTipHelper: const [Text("Low "), Text("   High")],
                 colorMode: ColorMode.color,
