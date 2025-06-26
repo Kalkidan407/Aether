@@ -23,7 +23,7 @@ Aether is AI-enhanced to-do list app built using **Flutter** and **Isar** databa
 
 | Task Entry Page | Heatmap Tracker | AI Feedback |
 |-----------------|-----------------|-------------|
-| ![task](screenshots/task_entry.jpg) | ![heatmap](screenshots/heatmap.jpg) | ![ai](screenshots/ai_feedback.png) |
+| ![task](screenshots/task_etry.jpg) | ![heatmap](screenshots/heamap.jpg) | ![ai](screenshots/ai_feedack.png) |
 
 
 
