@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -129,6 +131,7 @@ DateTime _normalizeDate(DateTime date) {
     return FutureBuilder(
     future: _dbFuture, 
     builder: (context, snapshot) {
+
        if (!snapshot.hasData) return const CircularProgressIndicator();
         final isar = snapshot.data!;
        return   
@@ -161,61 +164,108 @@ DateTime _normalizeDate(DateTime date) {
                 });
               },
             ),
-            IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+          
+
+           IconButton(
+            // backgroundColor: Color.fromARGB(255, 53, 7, 127),
+            onPressed: () => showDraggableSheet(context),
+            icon:  Icon(Icons.analytics_outlined, size: 22, ),
+          ),
           ],
         ),
 
-        floatingActionButton: SizedBox(
-          height: 60,
-          width: 60,
-          child: FloatingActionButton(
-            backgroundColor: Color.fromARGB(255, 53, 7, 127),
-            onPressed: () => showDraggableSheet(context),
-            child: Icon(Icons.grid_view, size: 30, color: Colors.white),
-          ),
-        ),
+        // floatingActionButton: SizedBox(
+        //   height: 60,
+        //   width: 60,
+        //   child: FloatingActionButton(
+        //     backgroundColor: Color.fromARGB(255, 53, 7, 127),
+        //     onPressed: () => showDraggableSheet(context),
+        //     child: Icon(Icons.grid_view, size: 30, color: Colors.white),
+        //   ),
+        // ),
 
         body: Column(
           children: [
+ SizedBox(
+    height: 7,
+  ),
+
+Container(
+  width: 180,
+margin: EdgeInsets.only(right: 120),
+alignment: Alignment.centerLeft,
+  child: Text('You have ${tasks.length} tasks this  week 👍',   
+   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900 )
+  )
+  
+  ),
+
+ 
+
             Padding(
-              padding: EdgeInsets.all(38.0),
+              padding: EdgeInsets.all(30.0),
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: 
+                   Row( 
+                    children: [
+                
+                   Expanded( 
+                     
+                     child:  TextField (
+                      textAlign: TextAlign.start,
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        
-                        labelText: 'e.g. Finish report this Friday',
+                      decoration: const InputDecoration (
+                        labelText: ' e.g. Finish report this Friday',
                         border: OutlineInputBorder(),
                       ),
-                      // onSubmitted: (_) => _addTask(title),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      final title = _controller.text.trim();
-                      _handleTaskInput(title);
-                      if (title.isNotEmpty) {
+                     onSubmitted: (_) {
+                       final title = _controller.text.trim();
+_handleTaskInput(title);
+                             if (title.isNotEmpty) {
 
                         _addTask(title);
                         _controller.clear();
                         
                       }
-                    },
-                    icon: Icon(Icons.add),
+                     }
+                      
+                    ),
+                    
+                    
+                    )
+                ])
                   ),
+                
                 ],
               ),
             ),
-            Expanded(
+
+            SizedBox(height: 2,),
+
+
+ SizedBox(height: 16,),
+
+  Container(
+  width: 180,
+margin: EdgeInsets.only(right: 120),
+alignment: Alignment.centerLeft,
+  child: Text('Added Tasks',   
+   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900 )
+  )
+  
+  ),
+  SizedBox(height: 3),
+
+          Expanded(
               child: ListView.builder(
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
 
                   final task = tasks[index];
 
-                  return Dismissible(
+                  return Dismissible (
                     key: Key(task.id.toString()),
                     direction: DismissDirection.endToStart,
                     confirmDismiss: (direction) async {
@@ -260,7 +310,17 @@ DateTime _normalizeDate(DateTime date) {
                       child: Icon(Icons.delete),
                     ),
 
-                    child: ListTile(
+                    child: 
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8,horizontal: 25),
+                      decoration: BoxDecoration(
+                   
+    shape: BoxShape.rectangle, // similar to CircleAvatar
+    border: Border.all(color: const Color.fromARGB(168, 86, 87, 86)),
+  
+                      ),
+                   child:  ListTile(
+                     selectedColor: Colors.green,
                       title: Text(
                         task.title,
                         style: TextStyle(
@@ -271,6 +331,8 @@ DateTime _normalizeDate(DateTime date) {
                                   : TextDecoration.none,
                         ),
                       ),
+                      
+
                       leading: Checkbox(
                         value: task.isDone,
                         
@@ -311,14 +373,14 @@ DateTime _normalizeDate(DateTime date) {
                     }
                   },
                   child: Text(
-        '🕒 ${DateFormat('EEE, MMM d').format(task.deadline)}',
+        ' ${DateFormat('EEE, MMM d').format(task.deadline)}',
         style: const TextStyle(fontSize: 13),
       ),
                 )
            
 
                     ),
-                  );
+                  ));
                 },
           )
           ),

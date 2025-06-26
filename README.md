@@ -31,13 +31,13 @@ Aether is AI-enhanced to-do list app built using **Flutter** and **Isar** databa
 
 ## 🛠️ Technologies Used
 
-- **Flutter** (UI Framework)
-- **Isar** (local NoSQL database)
-- **Gemini API** (Google AI for text analysis & generation)
-- **chrono_dart** (natural-language date parsing)
-- **flutter_heatmap_calendar** (visual tracker)
-- **intl & timezone** (date formatting & conversion)
-- **flutter_local_notifications** (smart reminders)
+- Flutter (UI Framework)
+- Isar(local NoSQL database)
+- Gemini API (Google AI for text analysis & generation)
+- chrono_dart (natural-language date parsing)
+- flutter_heatmap_calendar (visual tracker)
+- intl & timezone (date formatting & conversion)
+- flutter_local_notifications (smart reminders)
 
 ---
 
