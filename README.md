@@ -12,9 +12,9 @@ Aether is AI-enhanced to-do list app built using **Flutter** and **Isar** databa
 - ⏰ Set task deadlines manually or via smart text parsing
 - 🎯 Auto-delete completed tasks after deadline is passed
 - 🤖 Gemini AI integration to:
-  - Analyze your weekly performance
+  - Analyze your daily performance
   - Generate motivational messages
-  - Send smart deadline reminders
+  
 
 ---
 
