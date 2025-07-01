@@ -34,6 +34,8 @@ class _TaskListState extends State<TaskList> {
   late final TextEditingController _controller = TextEditingController();
   ThemeMode themeMode = ThemeMode.system;
  Completer<String>? _summaryCompleter;
+
+
   @override
   void initState() {
     super.initState();
@@ -44,13 +46,13 @@ class _TaskListState extends State<TaskList> {
     _triggerSummaryLoad();
   }
  
-  // A method to trigger reloading the summary message
+ 
   void _triggerSummaryLoad() {
-    // Cancel any previous completer if it exists and hasn't completed
-    _summaryCompleter?.completeError('Cancelled previous load'); // Optional, to prevent unawaited futures
+    
+    _summaryCompleter?.completeError('Cancelled previous load'); 
     _summaryCompleter = Completer<String>();
     loadSummary().then((msg) {
-      if (!_summaryCompleter!.isCompleted) { // Check if not already completed by error
+      if (!_summaryCompleter!.isCompleted) { 
         _summaryCompleter!.complete(msg);
       }
     }).catchError((e) {
@@ -116,40 +118,7 @@ Future<String> getMotivationalMessage(int completed, int total) async {
     }, 
   };
 
-
-// try{
-//   final response = await http.post (
-//     url,
-//     headers: {'Content-Type': 'application/json'},
-//     body: jsonEncode(requestBody),
-//   );
-
-// print('🔄 Status Code: ${response.statusCode}');
-//   print('📦 Body: ${response.body}');
-
-//   if (response.statusCode == 200) {
-//         final data = jsonDecode(response.body);
-//         // **CHANGED:** Accessing the text content in Gemini response
-//         // Ensure to handle cases where 'candidates', 'content', 'parts' might be missing
-//         if ( data['candidates'] != null &&
-//             data['candidates'].isNotEmpty &&
-//             data['candidates'][0]['content'] != null &&
-//             data['candidates'][0]['content']['parts'] != null &&
-//             data['candidates'][0]['content']['parts'].isNotEmpty &&
-//             data['candidates'][0]['content']['parts'][0]['text'] != null) {
-//           final message = data['candidates'][0]['content']['parts'][0]['text'];
-//           return message;
-//         } else {
-//           print('Error: Unexpected Gemini API response format.');
-//           return "Couldn't get a message. Try again!";
-//         }
-//       }
-
-  // final data = jsonDecode(response.body);
-  // final message = data['candidates'][0]['content'];
-  // return message;
-
-    try {
+  try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -161,8 +130,7 @@ Future<String> getMotivationalMessage(int completed, int total) async {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        // **CHANGED:** Accessing the text content in Gemini response
-        // Ensure to handle cases where 'candidates', 'content', 'parts' might be missing
+
         if ( data['candidates'] != null &&
             data['candidates'].isNotEmpty &&
             data['candidates'][0]['content'] != null &&
@@ -185,13 +153,7 @@ Future<String> getMotivationalMessage(int completed, int total) async {
       return "Network error or API call failed: ${e.toString()}";
     }
 
-
 }
-
-
-
-
-
 
   Future<String> loadSummary() async{
     final (total,completed) = await getTodayTaskStatus();
@@ -200,8 +162,6 @@ Future<String> getMotivationalMessage(int completed, int total) async {
    return msg;
   }
    
-
-
   void _requestPermissions() async {
     final status = await Permission.notification.status;
     if (!status.isGranted) {
@@ -250,23 +210,6 @@ if(deadline == null) {
     _triggerSummaryLoad();
   }
 
- // Future<void> _isOverDue(Isar isar, Task task) async {
-//   //  final delete = await isar.writeTxn(() => isar.tasks.delete(task.id));
-// DateTime _normalizeDate(DateTime date) {
-//     return DateTime(date.year, date.month, date.day);
-//   }
-//     final isar = Isar.getInstance(); // or use your isar service
-//     final completedTasks = await isar!.tasks
-//         .filter()
-//         .isDoneEqualTo(true)
-//         .findAll();
-//   final date = _normalizeDate(task.startTime ?? task.deadline ?? DateTime.now()); 
-//      if (date.isBefore(DateTime.now()) || date.isAtSameMomentAs(DateTime.now())) {
-//       isar.tasks;
-// }
-
-
-//   }
 
   @override
   void dispose() {
@@ -323,16 +266,7 @@ if(deadline == null) {
           ],
         ),
 
-        // floatingActionButton: SizedBox(
-        //   height: 60,
-        //   width: 60,
-        //   child: FloatingActionButton(
-        //     backgroundColor: Color.fromARGB(255, 53, 7, 127),
-        //     onPressed: () => loadSummary(),
-        //     child: Icon(Icons.grid_view, size: 30, color: Colors.white),
-        //   ),
-        // ),
-
+   
         body: Column(
           children: [
  SizedBox(
@@ -366,10 +300,7 @@ alignment: Alignment.centerLeft,
                           );
                         },
                       ),
-//Text( 
-// summaryMessage ,   
-//    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900 )
-//   )
+
   
   ),
 
@@ -511,25 +442,12 @@ alignment: Alignment.centerLeft,
                         value: task.isDone,
                         
                         onChanged: (value)  async{
-
-                        
                         await   _toggleTask( isar, task);
-                          
-                        // final heatmapDataProvider =
-                        //       Provider.of<HeatmapDataProvider>(
-                        //         context,
-                        //         listen: false,
-                        //       );
-                        //  heatmapDataProvider;
-                          },
+                     },
                         activeColor: Colors.green,
                       ),
-
-
                       
-                trailing: 
-                
-                GestureDetector(
+                trailing: GestureDetector(
                   onTap: () async {
                     final picked = await showDatePicker(
                       context: context, 
@@ -550,7 +468,7 @@ alignment: Alignment.centerLeft,
         ' ${DateFormat('EEE, MMM d').format(task.deadline)}',
         style: const TextStyle(fontSize: 13),
       ),
-                )
+   )
            
 
                     ),
