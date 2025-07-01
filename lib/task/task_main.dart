@@ -26,15 +26,12 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
    
   final apiKey = dotenv.env['GEMINI_API_KEY'] ?? 'ERROR ';
-  String summaryMessage = "Loading...";
   bool _isDarkMode = true;
   late Future<Isar> _dbFuture;
   final IsarService isarService = IsarService();
 
   late final TextEditingController _controller = TextEditingController();
   ThemeMode themeMode = ThemeMode.system;
- Completer<String>? _summaryCompleter;
-
 
   @override
   void initState() {
@@ -43,27 +40,9 @@ class _TaskListState extends State<TaskList> {
     tz.initializeTimeZones();
     // loadSummary();
     _dbFuture = _initDb();
-    _triggerSummaryLoad();
-  }
- 
- 
-  void _triggerSummaryLoad() {
-    
-    _summaryCompleter?.completeError('Cancelled previous load'); 
-    _summaryCompleter = Completer<String>();
-    loadSummary().then((msg) {
-      if (!_summaryCompleter!.isCompleted) { 
-        _summaryCompleter!.complete(msg);
-      }
-    }).catchError((e) {
-      if (!_summaryCompleter!.isCompleted) {
-        _summaryCompleter!.completeError(e);
-      }
-    });
-  }
-
-  // final geminiService = GeminiService();
   
+  }
+ 
   // void _handleTaskInput(String userInput) async{
   //    final extracted = await geminiService.extractDeadline(userInput);
   //    print('Gemini says: $extracted');
@@ -184,13 +163,10 @@ if(deadline == null) {
     context: context,
      firstDate: DateTime.now().subtract(const Duration(days: 1)), 
      lastDate: DateTime.now().add(const Duration(days: 365)),
-     
-     );
-
+    );
   // final parsed = result.first;
   if( deadline == null) return;
 }
-
     final task = Task()
       ..title = title
       ..deadline = deadline;
@@ -202,19 +178,17 @@ if(deadline == null) {
   Future<void> _toggleTask(Isar isar, Task task) async {
      task.isDone = !task.isDone;
      await isar.writeTxn(() => isar.tasks.put(task));
-     _triggerSummaryLoad();
   }
 
   Future<void> _deleteTask(Isar isar, Task task) async {
     await isar.writeTxn(() => isar.tasks.delete(task.id));
-    _triggerSummaryLoad();
+  
   }
 
 
   @override
   void dispose() {
     _controller.dispose();
-     _summaryCompleter?.completeError('Widget disposed');
     super.dispose();
   }
 
@@ -230,9 +204,10 @@ if(deadline == null) {
          StreamBuilder<List<Task>> (
           stream: isar.tasks.where().watch(fireImmediately: true),
           builder: (context, snapshot) {
-     final tasks = snapshot.data ?? [];
-
-       return  MaterialApp(
+         final tasks = snapshot.data ?? [];
+         final Future<String> currentSummaryFuture = loadSummary();
+    
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
       theme:
           _isDarkMode
@@ -257,7 +232,6 @@ if(deadline == null) {
               },
             ),
           
-
            IconButton(
             // backgroundColor: Color.fromARGB(255, 53, 7, 127),
             onPressed: () => showDraggableSheet(context),
@@ -266,10 +240,9 @@ if(deadline == null) {
           ],
         ),
 
-   
-        body: Column(
+  body: Column(
           children: [
- SizedBox(
+const SizedBox(
     height: 17,
   ),
 
@@ -277,16 +250,17 @@ Container(
   width: 180,
 margin: EdgeInsets.only(right: 120),
 alignment: Alignment.centerLeft,
-  child: FutureBuilder<String>(
-                        future: _summaryCompleter?.future, // Use the completer's future
+  child:  FutureBuilder<String>(
+                        future: currentSummaryFuture, // This Future will be new on task changes
                         builder: (context, summarySnapshot) {
                           if (summarySnapshot.connectionState == ConnectionState.waiting) {
-                            return const CircularProgressIndicator.adaptive(); // Show loading
+                            return const CircularProgressIndicator.adaptive();
                           } else if (summarySnapshot.hasError) {
                             print('Error loading summary: ${summarySnapshot.error}');
-                            return Text(
-                              'Error: ${summarySnapshot.error.toString().split(':')[0]}', // Display a simplified error
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.red),
+                            // A more user-friendly error message, e.g., "Failed to get message"
+                            return const Text(
+                              'Failed to get message.',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.red),
                             );
                           } else if (summarySnapshot.hasData) {
                             return Text(
@@ -295,7 +269,7 @@ alignment: Alignment.centerLeft,
                             );
                           }
                           return const Text(
-                            "Loading...", // Default state if no data/error yet
+                            "Loading...",
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                           );
                         },
