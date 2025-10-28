@@ -32,6 +32,7 @@ Aether is AI-enhanced to-do list app built using **Flutter** and **Isar** databa
 /user-attachments/assets/644bbb97-1ea8-444c-b329-2a0698fce357)
 ![photo_2025-10-28_12-53-30](https://github.com/user-attachments/assets/cbc0732d-ac39-4090-97ac-53c22d75093d)
 
+![photo_2025-10-28_12-53-19](https://github.com/user-attachments/assets/4daab26e-49f4-4935-9de9-d13fe6996da0)
 
 ---
 
@@ -79,4 +80,5 @@ Aether is AI-enhanced to-do list app built using **Flutter** and **Isar** databa
    ```bash
    git clone https://github.com/yourusername/aether_todo.git
    cd aether_todo
+
 
